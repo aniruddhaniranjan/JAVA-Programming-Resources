@@ -17,6 +17,11 @@ executor.shutdown();
 executor.awaitTermination();
 System.out.println("Finished all threads");
 
+// Alternatively use while loop to wait
+// Wait until all threads are finish
+while (!executor.isTerminated()) {
+}
+
 Callable Interface
 In case the threads should return some value (result-bearing threads) then you can use the "java.util.concurrent.Callable" class. The callable object can return the computed result done by a thread in contrast to a runnable interface which can only run the thread. The Callable object returns a Future object which provides methods to monitor the progress of a task being executed by a thread. The future object can be used to check the status of a Callable and then retrieve the result from the Callable once the thread is done. It also provides timeout functionality.
 
@@ -36,3 +41,4 @@ Future<Long> result10 = executor.submit(new FactorialService(10));
 Long factorial10 = result10.get();
 executor.shutdown();
 //Future also has cancel(boolean mayInterruptIfRunning), get(long timeout, TimeUnit unit), isCancelled() and isDone() methods
+
