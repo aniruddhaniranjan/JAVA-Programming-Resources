@@ -1,0 +1,38 @@
+Thread Pools with Executor Framework
+Manages a pool of threads, contains a work queue which contains a list of tasks waiting to get executed. A collection of Runnable objects. Threads are constantly running and are checking the work queue for new work. If there is new work to be done they execute this Runnable. The Thread class itself provides a method, e.g. execute(Runnable r) to add a new Runnable object to the work queue.
+Executors.newFixedThreadPool(int n) which will create n worker threads. The ExecutorService adds life cycle methods to the Executor, which allows to shutdown the Executor and to wait for termination.
+
+Usage of thread pools:
+ExecutorService executor = Executors.newFixedThreadPool(NTHREDS);
+for (int i = 0; i < 500; i++) {
+    Runnable worker = new MyRunnable(10000000L + i);
+    executor.execute(worker);
+}
+
+// This will make the executor accept no new threads
+// and finish all existing threads in the queue
+executor.shutdown();
+
+// Wait until all threads are finish
+executor.awaitTermination();
+System.out.println("Finished all threads");
+
+Callable Interface
+In case the threads should return some value (result-bearing threads) then you can use the "java.util.concurrent.Callable" class. The callable object can return the computed result done by a thread in contrast to a runnable interface which can only run the thread. The Callable object returns a Future object which provides methods to monitor the progress of a task being executed by a thread. The future object can be used to check the status of a Callable and then retrieve the result from the Callable once the thread is done. It also provides timeout functionality.
+
+static class FactorialService implements Callable<Long> {
+      private int number;
+      public FactorialService(int number) {
+         this.number = number;
+      }
+      @Override
+      public Long call() throws Exception {
+         //Code which returns a value
+      }
+}
+
+ExecutorService executor = Executors.newSingleThreadExecutor();
+Future<Long> result10 = executor.submit(new FactorialService(10));
+Long factorial10 = result10.get();
+executor.shutdown();
+//Future also has cancel(boolean mayInterruptIfRunning), get(long timeout, TimeUnit unit), isCancelled() and isDone() methods
